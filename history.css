@@ -1,0 +1,53 @@
+/* Estilos específicos para Historial de Ventas */
+.history-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.history-container h2 {
+  color: #4a90e2;
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+}
+
+.history-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.history-list li {
+  padding: 15px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.history-list li h3 {
+  margin: 0 0 5px;
+  color: #333;
+}
+
+.history-list li p {
+  margin: 5px 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.history-list li ul {
+  margin-top: 10px;
+  padding-left: 20px;
+}
+
+.history-list li ul li {
+  font-size: 0.9rem;
+  color: #777;
+}
+
+.history-list li ul li span {
+  font-weight: bold;
+}

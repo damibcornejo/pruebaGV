@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Govinda's - Menú Principal</title>
+  <style>
+    /* Estilos generales */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f4f4f4;
+    }
+    header {
+      background-color: #6ab04c;
+      color: white;
+      padding: 20px 10%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+    nav {
+      display: flex;
+      gap: 20px;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+      padding: 10px 20px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+    nav a:hover {
+      background-color: #58a043;
+    }
+
+    /* Contenido centrado */
+    .menu-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: calc(100vh - 80px); /* Resta la altura del encabezado */
+      padding: 20px;
+    }
+    .menu-container h2 {
+      margin-bottom: 20px;
+      font-size: 28px;
+    }
+    .menu-container button {
+      background-color: #6ab04c;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 18px;
+      margin: 10px 0;
+      width: 200px;
+      transition: background-color 0.3s ease;
+    }
+    .menu-container button:hover {
+      background-color: #58a043;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Govinda's - Sistema de Gestión</h1>
+    <nav>
+      <a href="inventory.html">Inventario</a>
+      <a href="orders.html">Pedido</a>
+      <a href="history.html">Historial</a>
+      <a href="#">Nosotros</a>
+    </nav>
+  </header>
+  <div class="menu-container">
+    <h2>¡Bienvenido al sistema de gestión!</h2>
+    <button onclick="window.location.href='inventory.html'">Inventario</button>
+    <button onclick="window.location.href='orders.html'">Pedido</button>
+    <button onclick="window.location.href='history.html'">Historial</button>
+  </div>
+</body>
+</html>

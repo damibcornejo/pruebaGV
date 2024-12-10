@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menú Principal</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Menú Principal</h1>
+  </header>
+  <main>
+    <nav id="admin-menu" style="display: none;">
+      <h2>Opciones del Administrador</h2>
+      <ul>
+        <li><a href="inventory.html">Inventario</a></li>
+        <li><a href="history.html">Historial de Ventas</a></li>
+      </ul>
+    </nav>
+    <nav id="seller-menu" style="display: none;">
+      <h2>Opciones del Vendedor</h2>
+      <ul>
+        <li><a href="sales.html">Ventas</a></li>
+      </ul>
+    </nav>
+    <button id="logout">Cerrar Sesión</button>
+  </main>
+
+  <script>
+    // Verificar el tipo de usuario desde localStorage
+    const userType = localStorage.getItem('userType');
+    if (!userType) {
+      alert('No hay una sesión activa. Por favor, inicie sesión.');
+      window.location.href = 'login.html';
+    }
+
+    // Mostrar el menú correspondiente según el perfil
+    if (userType === 'admin') {
+      document.getElementById('admin-menu').style.display = 'block';
+    } else if (userType === 'seller') {
+      document.getElementById('seller-menu').style.display = 'block';
+    }
+
+    // Manejar el cierre de sesión
+    document.getElementById('logout').addEventListener('click', function() {
+      localStorage.removeItem('userType'); // Cerrar sesión
+      window.location.href = 'login.html';
+    });
+  </script>
+</body>
+</html>

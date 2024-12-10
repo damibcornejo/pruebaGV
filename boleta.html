@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Boleta</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="boleta.css">
+</head>
+<body>
+  <header>
+    <h1>Boleta de Venta</h1>
+    <nav>
+      <a href="menu.html">Volver a Menú</a>
+      <a href="sales.html">Ventas</a>
+      <a href="index.html">Cerrar Sesión</a>
+    </nav>
+  </header>
+  <main>
+    <section>
+      <h2>Detalle de la Boleta</h2>
+      <div id="receipt-details">
+        <!-- Aquí se renderizan los detalles de la boleta -->
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Obtener el historial de ventas desde localStorage
+    const salesHistory = JSON.parse(localStorage.getItem('salesHistory')) || [];
+    
+    // Si no hay ventas registradas
+    if (salesHistory.length === 0) {
+      document.getElementById('receipt-details').innerHTML = '<p>No hay ventas registradas.</p>';
+    } else {
+      // Mostrar la última venta realizada
+      const lastSale = salesHistory[salesHistory.length - 1];
+      renderReceipt(lastSale);
+    }
+
+    // Función para renderizar la boleta
+    function renderReceipt(sale) {
+      const receiptDetails = document.getElementById('receipt-details');
+      let html = `
+        <p><strong>Fecha:</strong> ${sale.date}</p>
+        <p><strong>Monto Total:</strong> $${sale.totalAmount.toFixed(2)}</p>
+        <p><strong>Propina:</strong> $${sale.tip.toFixed(2)}</p>
+        <p><strong>Total con Propina:</strong> $${sale.finalAmount.toFixed(2)}</p>
+        <h3>Productos Vendidos:</h3>
+        <ul>
+      `;
+
+      sale.items.forEach(item => {
+        html += `
+          <li>
+            ${item.name} - ${item.quantity} unidades a $${item.price.toFixed(2)} c/u
+            <br>Total: $${(item.quantity * item.price).toFixed(2)}
+          </li>
+        `;
+      });
+
+      html += '</ul>';
+      receiptDetails.innerHTML = html;
+    }
+  </script>
+</body>
+</html>

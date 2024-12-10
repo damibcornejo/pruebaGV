@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Historial de Boletas</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="history.css">
+</head>
+<body>
+  <header>
+    <h1>Historial de Boletas</h1>
+    <nav>
+      <a href="menu.html">Volver a Menú</a>
+      <a href="inventory.html">Inventario</a>
+      <a href="index.html">Cerrar Sesión</a>
+    </nav>
+  </header>
+  <main>
+    <section id="total-sales"></section>
+    <section id="history-list"></section>
+    <button id="clear-history">Limpiar Historial</button>
+  </main>
+
+  <script>
+    // Función para formatear en pesos chilenos
+    function formatCurrency(amount) {
+      return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(amount);
+    }
+
+    const salesHistory = JSON.parse(localStorage.getItem('salesHistory')) || [];
+    const historyList = document.getElementById('history-list');
+    const totalSales = document.getElementById('total-sales');
+    const clearHistoryBtn = document.getElementById('clear-history');
+
+    // Mostrar el historial de ventas
+    if (salesHistory.length === 0) {
+      historyList.innerHTML = '<p>No hay boletas registradas.</p>';
+      totalSales.innerHTML = '';
+    } else {
+      // Calcular el total acumulado de las ventas
+      const totalAmount = salesHistory.reduce((sum, sale) => sum + sale.finalAmount, 0);
+      totalSales.innerHTML = `<h2>Total Acumulado: ${formatCurrency(totalAmount)}</h2>`;
+
+      let html = '';
+      salesHistory.forEach(sale => {
+        html += `
+          <div class="sale-item">
+            <h3>Fecha: ${sale.date}</h3>
+            <p><strong>Total Venta:</strong> ${formatCurrency(sale.totalAmount)}</p>
+            <p><strong>Propina:</strong> ${formatCurrency(sale.tip)}</p>
+            <p><strong>Total con Propina:</strong> ${formatCurrency(sale.finalAmount)}</p>
+            <ul>
+              ${sale.items.map(item => `
+                <li>${item.name} - ${item.quantity} unidades a ${formatCurrency(item.price)} c/u</li>
+              `).join('')}
+            </ul>
+          </div>
+        `;
+      });
+      historyList.innerHTML = html;
+    }
+
+    // Limpiar el historial de ventas
+    clearHistoryBtn.addEventListener('click', () => {
+      localStorage.removeItem('salesHistory'); // Eliminar las boletas del localStorage
+      location.reload(); // Recargar la página para reflejar el cambio
+    });
+  </script>
+</body>
+</html>
