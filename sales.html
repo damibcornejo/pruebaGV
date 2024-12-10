@@ -19,10 +19,10 @@
   <main>
     <section>
       <h2>Productos para Venta</h2>
-      
+
       <!-- Campo de búsqueda -->
       <input type="text" id="search-product" placeholder="Buscar producto por nombre">
-      
+
       <ul id="sales-stock"></ul>
 
       <form id="add-product-form">
@@ -46,6 +46,7 @@
       <h3>Carrito de Pedido</h3>
       <ul id="cart-list"></ul>
 
+      <!-- Propina sugerida -->
       <div>
         <label for="tip">Propina (opcional):</label>
         <input type="number" id="tip" placeholder="Ingrese monto de propina" value="0" min="0">
@@ -92,12 +93,25 @@
         });
     }
 
-    // Búsqueda dinámica
-    document.getElementById('search-product').addEventListener('input', function (event) {
-      renderSalesStock(event.target.value);
-    });
+    // Renderizar carrito
+    function renderCart() {
+      const cartList = document.getElementById('cart-list');
+      const totalAmount = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
-    // Agregar producto
+      cartList.innerHTML = cart.length === 0
+        ? '<li>El carrito está vacío.</li>'
+        : cart.map((item, index) => `
+          <li>
+            ${item.name} - ${item.quantity} unidades a ${formatCurrency(item.price)} c/u
+            <button onclick="removeFromCart(${index})">Eliminar</button>
+          </li>
+        `).join('');
+
+      // Actualizar propina sugerida
+      document.getElementById('suggested-tip').textContent = `Propina sugerida: ${formatCurrency(totalAmount * 0.1)}`;
+    }
+
+    // Añadir producto
     document.getElementById('add-product-form').addEventListener('submit', function(event) {
       event.preventDefault();
       const name = document.getElementById('product-name').value;
@@ -141,7 +155,103 @@
       }
     }
 
+    // Añadir al carrito
+    document.getElementById('add-to-cart').addEventListener('click', function () {
+      const productIndex = parseInt(document.getElementById('product-select').value);
+      const saleQuantity = parseInt(document.getElementById('sale-quantity').value);
+
+      if (isNaN(productIndex) || isNaN(saleQuantity) || saleQuantity <= 0) {
+        alert('Seleccione un producto y una cantidad válida.');
+        return;
+      }
+
+      const selectedProduct = salesStock[productIndex];
+
+      if (saleQuantity > selectedProduct.quantity) {
+        alert('Cantidad insuficiente en el stock.');
+        return;
+      }
+
+      // Reducir cantidad en el stock
+      selectedProduct.quantity -= saleQuantity;
+
+      // Verificar si el producto ya está en el carrito
+      const cartItemIndex = cart.findIndex(item => item.name === selectedProduct.name);
+      if (cartItemIndex !== -1) {
+        // Actualizar cantidad si ya existe
+        cart[cartItemIndex].quantity += saleQuantity;
+      } else {
+        // Agregar nuevo producto al carrito
+        cart.push({
+          name: selectedProduct.name,
+          price: selectedProduct.price,
+          quantity: saleQuantity,
+        });
+      }
+
+      renderSalesStock(); // Actualizar el stock visible
+      renderCart();       // Actualizar el carrito visible
+      document.getElementById('register-sale-form').reset();
+    });
+
+    // Eliminar del carrito
+    function removeFromCart(index) {
+      const item = cart[index];
+      const stockProduct = salesStock.find(p => p.name === item.name);
+
+      // Restaurar cantidad al stock
+      stockProduct.quantity += item.quantity;
+
+      cart.splice(index, 1);
+      renderSalesStock();
+      renderCart();
+    }
+
+    // Finalizar venta
+    document.getElementById('finalize-sale').addEventListener('click', function () {
+      if (cart.length === 0) {
+        alert('El carrito está vacío.');
+        return;
+      }
+
+      const tipAmount = parseFloat(document.getElementById('tip').value) || 0;
+      if (tipAmount < 0) {
+        alert('La propina no puede ser negativa.');
+        return;
+      }
+
+      const totalAmount = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      const finalAmount = totalAmount + tipAmount;
+
+      // Registrar venta en el historial
+      salesHistory.push({
+        items: [...cart],
+        totalAmount,
+        tip: tipAmount,
+        finalAmount,
+        date: new Date().toLocaleString(),
+      });
+
+      // Reducir la cantidad de productos en el stock
+      cart.forEach((item) => {
+        const product = salesStock.find(p => p.name === item.name);
+        product.quantity -= item.quantity;
+      });
+
+      localStorage.setItem('salesHistory', JSON.stringify(salesHistory));
+      localStorage.setItem('salesStock', JSON.stringify(salesStock));
+      cart = [];
+      renderSalesStock();
+      alert(`Venta registrada exitosamente. Total: ${formatCurrency(finalAmount)}`);
+    });
+
+    // Búsqueda dinámica
+    document.getElementById('search-product').addEventListener('input', function (event) {
+      renderSalesStock(event.target.value);
+    });
+
     renderSalesStock();
+    renderCart();
   </script>
 </body>
 </html>
